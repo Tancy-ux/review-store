@@ -79,9 +79,9 @@ app.get('/get-reviews', async (req, res) => {
     const records = response.data.data.map((r) => ({
       name: r.Name,
       text: r.text,
-      rating: parseInt(r.Ratings),
+      rating: parseInt(r.Ratings1),
       designation: r.Designation,
-      company: r.Company_Name,
+      company: r.Company,
     }));
 
     res.json(records);
