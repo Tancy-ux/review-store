@@ -45,7 +45,7 @@ app.post('/submit-review', async (req, res) => {
           Name: name,
           Reviews: text,
           Designation: designation,
-          Restaurant_Company_Name: company,
+          Company_Name: company,
         },
       },
       {
@@ -78,10 +78,10 @@ app.get('/get-reviews', async (req, res) => {
 
     const records = response.data.data.map((r) => ({
       name: r.Name,
-      text: r.Reviews,
+      text: r.text,
       rating: parseInt(r.Ratings),
       designation: r.Designation,
-      company: r.Restaurant_Company_Name,
+      company: r.Company_Name,
     }));
 
     res.json(records);
