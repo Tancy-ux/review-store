@@ -1,6 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 
 const app = express();
@@ -9,6 +10,7 @@ const PORT = process.env.PORT;
 let access_token = '';
 
 app.use(express.json());
+app.use(cors());
 
 // 🔄 Get new access token using refresh token
 async function refreshAccessToken() {
