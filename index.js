@@ -41,11 +41,11 @@ app.post('/submit-review', async (req, res) => {
       process.env.ZOHO_FORM_URL,
       {
         data: {
-          Ratings: rating.toString(),
-          Name: name,
-          Reviews: text,
-          Designation: designation,
-          Company_Name: company,
+          Ratings1: rating.toString(),
+          name,
+          text,
+          designation,
+          company,
         },
       },
       {
