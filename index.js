@@ -34,38 +34,70 @@ app.use(async (req, res, next) => {
 
 // 📥 Submit review to Zoho Creator
 app.post('/submit-review', async (req, res) => {
+  console.log("📥 Received POST /submit-review");
+
   const { name, text, rating, designation, company } = req.body;
 
+  console.log("📦 Incoming Data:", {
+    name,
+    text,
+    rating,
+    designation,
+    company
+  });
+
+  // Build Zoho payload using exact field API names
+  const payload = {
+    data: {
+      Name: name,
+      Text1: text,
+      Ratings1: rating.toString(),
+      Designation: designation,
+      Company: company,
+    }
+  };
+  
+
+  console.log("📝 Payload for Zoho Creator:", payload);
+
   try {
-    const response = await axios.post(
-      process.env.ZOHO_FORM_URL,
-      {
-        data: {
-          Ratings1: rating.toString(),
-          name,
-          text,
-          designation,
-          company,
-        },
+    const response = await axios.post(process.env.ZOHO_FORM_URL, payload, {
+      headers: {
+        Authorization: `Zoho-oauthtoken ${access_token}`,
+        'Content-Type': 'application/json',
       },
-      {
-        headers: {
-          Authorization: `Zoho-oauthtoken ${access_token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    });
+
+    console.log("✅ Zoho responded successfully:", response.data);
 
     res.json({ success: true, response: response.data });
+
   } catch (error) {
-    if (error.response && error.response.status === 401) {
-      await refreshAccessToken();
-      return res.redirect(307, '/submit-review'); // retry
+    if (error.response) {
+      const status = error.response.status;
+      const errorData = error.response.data;
+
+      console.error(`❌ Zoho API Error (${status}):`, errorData);
+
+      // Handle expired token
+      if (status === 401) {
+        console.log("🔁 Refreshing token due to 401 Unauthorized...");
+        await refreshAccessToken();
+        return res.redirect(307, '/submit-review');
+      }
+
+      return res.status(status).json({
+        error: "Zoho API error",
+        details: errorData,
+      });
     }
-    console.error(error.response?.data || error.message);
-    res.status(500).json({ error: 'Failed to submit review' });
+
+    // If it's some other error (network, etc.)
+    console.error("🚨 Unexpected Submit Error:", error.message || error);
+    res.status(500).json({ error: "Unexpected error during review submission" });
   }
 });
+
 
 // 📤 Get reviews from Zoho Creator
 app.get('/get-reviews', async (req, res) => {
