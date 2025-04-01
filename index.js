@@ -50,7 +50,7 @@ app.post('/submit-review', async (req, res) => {
   const payload = {
   data: {
     Name: name,
-    Text: text,
+    Text1: text,
     Ratings1: rating.toString(),
     Designation: designation,
     Company: company,
