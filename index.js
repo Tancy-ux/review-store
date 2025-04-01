@@ -48,15 +48,15 @@ app.post('/submit-review', async (req, res) => {
 
   // Build Zoho payload using exact field API names
   const payload = {
-    data: {
-      Name: name,
-      Reviews: text,
-      Ratings1: rating.toString(),
-      Designation: designation,
-      Company: company,
-    }
-  };
-  
+  data: {
+    Name: name,
+    Text: text,
+    Ratings1: rating.toString(),
+    Designation: designation,
+    Company: company,
+  }
+};
+
 
   console.log("📝 Payload for Zoho Creator:", payload);
 
